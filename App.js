@@ -7,6 +7,8 @@ const App = () => {
   const [imageUri, setImageUri] = useState(
     'https://static.vecteezy.com/system/resources/previews/005/005/840/non_2x/user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg'
   );
+  const [nombre, setNombre] = useState("");
+  const [contraseña, setContraseña] = useState("");
 
   const pickerImageGaleria = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -16,8 +18,8 @@ const App = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setImageUri(result.uri);
+    if (result.assets && result.assets.length > 0) {
+      setImageUri(result.assets[0].uri);
     }
   };
 
@@ -43,6 +45,27 @@ const App = () => {
     }
   };
 
+  const Validaciones = (Nombre, Contraseña) => {
+    if (Nombre === "" || Contraseña === "") {
+      alert("Por favor rellena los campos");
+      return false;
+    }
+    if (Nombre.length > 30) {
+      alert("El nombre debe tener un máximo de 30 caracteres");
+      return false;
+    }
+    if (Contraseña.length < 8 || Contraseña.length > 16) {
+      alert("La contraseña debe tener entre 8 y 16 caracteres");
+      return false;
+    }
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/;
+    if (!regex.test(Contraseña)) {
+      alert("La contraseña debe incluir al menos una letra mayúscula, una minúscula y un número");
+      return false;
+    }
+    return true;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.subcontainer}>
@@ -62,13 +85,33 @@ const App = () => {
         
         <View style={styles.subcontainer2}>
           <Text style={styles.subtitle}>Nombre de usuario:</Text>
-          <TextInput style={styles.input} placeholder='Nombre' placeholderTextColor="#bbb" />
+          <TextInput
+            style={styles.input}
+            placeholder="Nombre"
+            placeholderTextColor="#bbb"
+            onChangeText={setNombre}
+            value={nombre}
+          />
           
           <Text style={styles.subtitle}>Contraseña:</Text>
-          <TextInput style={styles.input} placeholder='Contraseña' secureTextEntry placeholderTextColor="#bbb" />
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            secureTextEntry
+            placeholderTextColor="#bbb"
+            onChangeText={setContraseña}
+            value={contraseña}
+          />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => Alert.alert('Usuario Registrado')}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            if (Validaciones(nombre, contraseña)) {
+              alert("Usuario Registrado");
+            }
+          }}
+        >
           <Text style={styles.buttontext}>ACEPTAR</Text>
         </TouchableOpacity>
       </View>
