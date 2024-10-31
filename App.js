@@ -40,8 +40,16 @@ const App = () => {
       });
     }
 
-    if (!result.canceled) {
-      setImageUri(result.uri);
+    if (result.assets && result.assets.length > 0) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      await Sharing.shareAsync(imageUri);
+    } catch (error) {
+      Alert.alert("Error al compartir la imagen", error.message);
     }
   };
 
@@ -63,7 +71,13 @@ const App = () => {
       alert("La contraseña debe incluir al menos una letra mayúscula, una minúscula y un número");
       return false;
     }
-    return true;
+    if(Nombre === "Usuario" && Contraseña === "Usuario123"){
+      alert("Sesion Iniciada");
+      return false;
+    } else {
+      alert("Usuario o contraseña incorrectos");
+      return false;
+    }
   };
 
   return (
@@ -75,7 +89,7 @@ const App = () => {
           <Image source={{ uri: imageUri }} style={styles.image} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Sharing.shareAsync(imageUri)} style={styles.button3}>
+        <TouchableOpacity onPress={handleShare} style={styles.button3}>
           <Text style={styles.buttontext}>COMPARTIR</Text>
         </TouchableOpacity>
 
@@ -108,7 +122,7 @@ const App = () => {
           style={styles.button}
           onPress={() => {
             if (Validaciones(nombre, contraseña)) {
-              alert("Usuario Registrado");
+              alert("Sesion iniciada");
             }
           }}
         >
